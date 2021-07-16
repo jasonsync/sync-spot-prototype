@@ -1,0 +1,100 @@
+body {
+  background-color: #f7f7f7;
+  margin: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-family: arial, sans-serif;
+  font-size: 10pt;
+  color: #333;
+}
+
+h4 {
+  font-style: italic;
+  color: #a0a0a0;
+  padding: 20px;
+}
+
+.tiny-text {
+  font-size: 4pt;
+}
+
+.grey {
+  color: #a0a0a0;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.form {
+  padding: 10px;
+}
+
+.form-item {
+  margin: 10px;
+}
+
+.form-item label {
+  display: inline-block;
+  width: 100px;
+}
+.form-item input {
+  width: 120px;
+}
+
+.flex-container, .flex-heading-container {
+  display: inline-flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-content: space-around;
+}
+
+.flex-container {
+  width: 100%; /* so that the flex-heading-container layout fits nicely */
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.flex-item {
+  border: 1px solid black;
+  padding: 5px;
+  margin: 7px;
+  border-radius: 7px;
+  background-color: #f3f3f3;
+}
+
+.flex-heading-item {
+  padding: 5px 25px 0 25px;
+  margin: 0px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  color: #f3f3f3;
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+.description {
+  font-size: 8pt;
+  padding: 5px;
+  color: #00c000;
+}
+
+.requirements {
+  font-size: 8pt;
+  padding: 5px;
+  color: #d80000;
+}
+
+.requirements::before {
+  content: "*";
+}
+
+.output {
+  border: 1px solid black;
+  padding: 5px;
+  margin: 7px;
+  border-radius: 7px;
+  background-color: #f3f3f3;
+}
