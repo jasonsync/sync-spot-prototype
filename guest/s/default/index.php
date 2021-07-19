@@ -1,7 +1,7 @@
 <?php
 include 'config.php';
 
-if ($config['test_screen']) {
+if ($config['debug_test_screen']) {
     require __DIR__ . '\tests.php';
     exit;
 }

@@ -13,81 +13,102 @@ class UnifiHelper
     private $unifi_connection;
     private $config_controller;
     private $config_helper;
-    private $debug;
+
+    private $stacktrace_enabled;
+    private $stacktrace;
+    private $laststacktime;
 
     public function __construct($config)
     {
         $this->config_controller = $config['unifi-api']['controller'];
-        $this->config_helper = $config['sync']['unifi-helper'];
-        $this->debug = $this->config_helper['debug'];
-
-        // if "dev_mode" == false, turn off all debug messages:
-        if (!$config['dev_mode']) {
-            $this->debug = false;
-            $this->config_controller['debug'] = false;
-        }
-
+        $this->stacktrace_enabled = $config['stacktrace_enabled'];
+        $this->laststacktime = false;
         $this->unifi_connection = new \UniFi_API\Client($this->config_controller['username'], $this->config_controller['password'], $this->config_controller['url'], $this->config_controller['site_id'], $this->config_controller['version']);
         $this->unifi_connection->set_debug($this->config_controller['debug']);
+    }
+    /**
+     * [stacktrace builds stacktrace for debugging purposes]
+     * @param  String $step          What step in the trace, e.g. "call", "response", "...". Optional
+     * @param  String $callee_fn_name Record of callee function. Required
+     * @param  Array $arguments       function arguments. Optional
+     * @param  Array $response        function's response. Optional
+     * @return Void
+     */
+    private function stacktrace($step = 'call', $callee_fn_name, $arguments=null, $response = null)
+    {
+        /* if stacktrace is enabled, add this function call and response to the stacktrace */
+        if ($this->stacktrace_enabled == true) {
+            $trace = [];
+            $trace['step'] = $step;
+            $trace['method'] = $callee_fn_name;
+            $trace['arguments'] = $arguments;
+            $trace['response'] = $response;
+            $trace['ns_since_last_trace'] = 0;
+
+            $this_trace_time = hrtime(true);
+            if ($this->laststacktime) {
+                $trace['ns_since_last_trace'] = $this_trace_time-$this->laststacktime;
+            }
+            $this->laststacktime = $this_trace_time;
+            $this->stacktrace[] = $trace;
+        }
+    }
+
+    /**
+     * [handle_response returns response with stacktrace]
+     * @param  String $callee_fn_name Name of initiator function / method
+     * @param  Array $response       response
+     * @return Array                 Array containing stacktrace Array and response
+     */
+    private function handle_response($callee_fn_name, $response)
+    {
+        $return = [];
+        /* if stacktrace is enabled, add this function call to the stacktrace*/
+        if ($this->stacktrace_enabled == true) {
+            $return['stacktrace'] = $this->stacktrace;
+        }
+        $return['response'] = $response;
+        return $return;
     }
 
     public function login()
     {
-        if ($this->debug) {
-            echo '--- debug ---  UnifiHelper initialised<br />';
-            echo '--- debug ---  UnifiHelper unifi_connection->login()<br />';
-            echo "<pre>";
-
-            $loginresults     = $this->unifi_connection->login();
-
-            print_r($loginresults);
-            echo "</pre>";
-            echo '<br /><br />';
-        } else {
-            // suppress warnings
-            $loginresults = @$this->unifi_connection->login();
-            return $loginresults;
-        }
+        $this->stacktrace('call', __FUNCTION__, null, null); // continue stack trace
+        $response = @$this->unifi_connection->login();  // call API and get response
+        $return =  $this->handle_response(__FUNCTION__, $response);  // make return variable consisting of current stack trace + response
+        $this->stacktrace('response', __FUNCTION__, null, $response);  // continue stack trace (this is only necessary if we are calling this function from within another parent function)
+        return $return;
     }
 
-    public function list_sessions()
+    //stat_sta_sessions_latest
+
+    public function authorize_device($mac, $ap)
     {
-        $result = $this->unifi_connection->list_guests();
-        if ($this->debug) {
-            echo '--- debug UnifiHelper->list_sessions(): --- <br />';
-            echo "<pre>";
-            print_r($result);
-            echo "</pre>";
-            echo '<br /><br />';
-        }
+        // login is needed
+        $this->login();
+
+        // continue stack trace
+        $this->stacktrace('call', __FUNCTION__, array('$mac'=>$mac,'$ap'=>$ap), null);
+
+        // call API and get response
+        $response = @$this->unifi_connection->authorize_guest($mac, $this->config_controller['duration'], $up = null, $down = null, $MBytes = null, $ap);
+
+        // make return variable consisting of current stack trace + response
+        $return =  $this->handle_response(__FUNCTION__, $response);
+
+        // continue stack trace (this is only necessary if we are calling this function from within another parent function)
+        $this->stacktrace('response', __FUNCTION__, array('$mac'=>$mac,'$ap'=>$ap), $response);
+
+        // return variable consisting of current stack trace + response
+        return $return;
     }
 
-    public function authorize_guest($mac, $ap)
+    public function unauthorize_device($mac)
     {
         $this->login();
         if ($this->debug) {
-            echo '--- debug ---  UnifiHelper initialised<br />';
-            echo '--- debug ---  UnifiHelper unifi_connection->authorize_guest($mac="'.$mac.'",$ap="'.$ap.'")<br />';
-            echo "<pre>";
-
-            $result = $this->unifi_connection->authorize_guest($mac, $this->config_controller['duration'], $up = null, $down = null, $MBytes = null, $ap);
-
-            print_r($result);
-            echo "</pre>";
-            echo '<br /><br />';
-        } else {
-            // suppress warnings
-            $result = @$this->unifi_connection->authorize_guest($mac, $this->config_controller['duration'], $up = null, $down = null, $MBytes = null, $ap);
-            return $result;
-        }
-    }
-
-    public function unauthorize_guest($mac)
-    {
-        $this->login();
-        if ($this->debug) {
-            echo '--- debug ---  UnifiHelper initialised<br />';
-            echo '--- debug ---  UnifiHelper unifi_connection->unauthorize_guest($mac="'.$mac.'")<br />';
+            echo '--- debug ---  UnifiHelper unauthorize_device($mac="'.$mac.'")<br />';
+            echo '--- debug ---  $this->unifi_connection->unauthorize_guest($mac);<br />';
             echo "<pre>";
 
             $result = $this->unifi_connection->unauthorize_guest($mac);
@@ -102,11 +123,12 @@ class UnifiHelper
         }
     }
 
-    public function reconnect_guest($mac)
+    public function reconnect_device($mac)
     {
+        $this->login();
         if ($this->debug) {
-            echo '--- debug ---  UnifiHelper initialised<br />';
-            echo '--- debug ---  UnifiHelper unifi_connection->reconnect_sta($mac="'.$mac.'")<br />';
+            echo '--- debug ---  UnifiHelper reconnect_device($mac="'.$mac.'")<br />';
+            echo '--- debug ---  $this->unifi_connection->reconnect_sta($mac);<br />';
             echo "<pre>";
 
             $result = $this->unifi_connection->reconnect_sta($mac);
@@ -121,15 +143,65 @@ class UnifiHelper
         }
     }
 
-    public function list_clients()
+    public function list_guests()
     {
-        $result = $this->unifi_connection->list_clients();
-        echo('list_clients(): ');
-        echo('<br />');
-        echo "<pre>";
+        $this->login();
+        if ($this->debug) {
+            echo '--- debug ---  UnifiHelper list_guests()<br />';
+            echo '--- debug ---  $this->unifi_connection->list_guests();<br />';
+            echo "<pre>";
 
-        print_r($result);
-        echo "</pre>";
+            $result = $this->unifi_connection->list_guests();
+
+            print_r($result);
+            echo "</pre>";
+            echo '<br /><br />';
+        } else {
+            // suppress warnings
+            $result = @$this->unifi_connection->list_guests();
+            return $result;
+        }
+    }
+
+    public function list_clients($mac = null)
+    {
+        $this->login();
+        if ($this->debug) {
+            echo '--- debug ---  UnifiHelper list_clients()<br />';
+            echo '--- debug ---  $this->unifi_connection->list_clients($mac = null);<br />';
+            echo "<pre>";
+
+            $result = $this->unifi_connection->list_clients($mac);
+
+            print_r($result);
+            echo "</pre>";
+            echo '<br /><br />';
+        } else {
+            // suppress warnings
+            $result = @$this->unifi_connection->list_clients($mac);
+            return $result;
+        }
+    }
+    //
+
+    public function list_device_authorizations($start = null, $end = null)
+    {
+        $this->login();
+        if ($this->debug) {
+            echo '--- debug ---  UnifiHelper stat_auths()<br />';
+            echo '--- debug ---  unifi_connection->stat_auths($start, $end);<br />';
+            echo "<pre>";
+
+            $result = $this->unifi_connection->stat_auths($start, $end);
+
+            print_r($result);
+            echo "</pre>";
+            echo '<br /><br />';
+        } else {
+            // suppress warnings
+            $result = $this->unifi_connection->stat_auths($start, $end);
+            return $result;
+        }
     }
 }
 

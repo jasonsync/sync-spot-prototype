@@ -8,6 +8,6 @@ if (!isset($_GET['mac'])) {
 }
 
 $SyncUnifiHelper = new SyncSpot\UnifiHelper($config);
-$response = $SyncUnifiHelper->unauthorize_guest("b4:1a:1d:a4:8e:28");
+$response = $SyncUnifiHelper->unauthorize_device($_GET['mac']);
 
 echo($response);

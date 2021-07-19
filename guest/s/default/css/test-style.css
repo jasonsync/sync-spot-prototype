@@ -6,6 +6,7 @@ body {
   font-family: arial, sans-serif;
   font-size: 10pt;
   color: #333;
+  user-select: none;
 }
 
 h4 {
@@ -26,6 +27,14 @@ h4 {
   font-style: italic;
 }
 
+.larger {
+  font-size:12pt;
+}
+
+.bold {
+  font-weight: bold;
+}
+
 .form {
   padding: 10px;
 }
@@ -38,11 +47,12 @@ h4 {
   display: inline-block;
   width: 100px;
 }
+
 .form-item input {
   width: 120px;
 }
 
-.flex-container, .flex-heading-container {
+.flex-container {
   display: inline-flex;
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -50,11 +60,27 @@ h4 {
 }
 
 .flex-container {
-  width: 100%; /* so that the flex-heading-container layout fits nicely */
+  width: 100%;
+  /* so that the flex-heading-container layout fits nicely */
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
   border-top-right-radius: 15px;
   margin-bottom: 5px;
+}
+
+.flex-heading-item {
+  display: inline-flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-content: space-around;
+  align-items: center;
+  padding: 5px 25px 0 25px;
+  margin: 0px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  color: #f3f3f3;
+  font-size: 12pt;
+  font-weight: bold;
 }
 
 .flex-item {
@@ -65,30 +91,49 @@ h4 {
   background-color: #f3f3f3;
 }
 
-.flex-heading-item {
-  padding: 5px 25px 0 25px;
-  margin: 0px;
-  border-top-right-radius: 20px;
-  border-top-left-radius: 20px;
-  color: #f3f3f3;
-  font-size: 12pt;
-  font-weight: bold;
-}
-
 .description {
   font-size: 8pt;
   padding: 5px;
-  color: #00c000;
+  /* color: #00c000; */
 }
 
-.requirements {
-  font-size: 8pt;
+.required {
+  /* font-size: 10pt; */
   padding: 5px;
   color: #d80000;
+  font-weight: bold;
 }
 
-.requirements::before {
-  content: "*";
+.required::before {
+  content: "ℹ";
+}
+
+/* HIDING */
+.btn-show, .btn-hide {
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 25%);
+  cursor: pointer;
+  padding: 3px 10px;
+  margin-left: 10px;
+  user-select: none;
+}
+
+.btn-show:hover, .btn-hide:hover {
+  filter: brightness(1.3);
+}
+
+.hide-contents .flex-heading-item {
+  border-radius: 20px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+}
+
+.flex-section.hide-contents .flex-container, .flex-section.hide-contents .btn-hide {
+  display: none;
+}
+
+.flex-section:not(.hide-contents) .btn-show {
+  display: none;
 }
 
 .output {
@@ -97,4 +142,5 @@ h4 {
   margin: 7px;
   border-radius: 7px;
   background-color: #f3f3f3;
+  user-select: text;
 }
