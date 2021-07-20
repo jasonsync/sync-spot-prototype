@@ -28,7 +28,7 @@ h4 {
 }
 
 .larger {
-  font-size:12pt;
+  font-size: 12pt;
 }
 
 .bold {
@@ -143,4 +143,5 @@ h4 {
   border-radius: 7px;
   background-color: #f3f3f3;
   user-select: text;
+  word-break: break-all;
 }

@@ -268,9 +268,18 @@ if (!isset($_SESSION["url"])) {
     </div>
   </div>
 
-  <div class="output" id="output">
-    Output:
+  <div class="output" id="output_fetch_response">
+    Response:
   </div>
+
+  <div class="output" id="output_fetch_stacktrace">
+    Stack Trace:
+  </div>
+
+  <div class="output" id="output_fetch_raw">
+    Raw Response:
+  </div>
+
 
   <h4>Debugging note:
     <br />With every interaction with the Unifi Controller at least 2 API requests are made:
@@ -295,7 +304,7 @@ window.debug_console_log = false;
       var device_mac = document.getElementById("authorize_device_mac").value;
       var ap_mac = document.getElementById("authorize_device_ap_mac").value;
       fetch('tests/authorize_device.php?mac=' + device_mac + "&ap=" + ap_mac)
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => display_output(data))
     };
     var authorize_device_then_redirect = function() {
@@ -368,7 +377,20 @@ window.debug_console_log = false;
       if(window.debug_console_log){
         console.log(output);
       }
-      document.getElementById("output").innerHTML = "<span style='color:#00c000;'>Output:</span><br /><br />" + JSON.stringify(output);
+
+      if(output.response == undefined){ // in case it is returned not as json
+        document.getElementById("output_fetch_raw").innerHTML = "<span style='color:#00c000;'>Output (Raw):</span><br /><br />" + output;
+        return;
+      }
+
+      document.getElementById("output_fetch_raw").innerHTML = "<span style='color:#00c000;'>Output (Raw):</span><br /><pre>" + JSON.stringify(output,null,2) + "</pre>";
+
+      document.getElementById("output_fetch_response").innerHTML = "<span style='color:#00c000;'>Response:</span><br /><pre>" + JSON.stringify(output.response,null,2) + "</pre>";
+      var stacktrace = "";
+      for (var i = 0; i < output.stacktrace.length; i++) {
+        stacktrace += "step "+ i + ":<br /><pre>" + JSON.stringify(output.stacktrace[i],null,2) + '</pre><br />';
+      }
+      document.getElementById("output_fetch_stacktrace").innerHTML = "<span style='color:#00c000;'>Stack Trace:</span><br /><br />" + stacktrace;
     }
 
     var generate_random_mac = function(){

@@ -9,4 +9,6 @@ if (isset($_GET['mac'])) {
 
 $SyncUnifiHelper = new SyncSpot\UnifiHelper($config);
 $response = $SyncUnifiHelper->list_clients($mac);
-print_r ($response);
+
+header('Content-Type: application/json');
+echo json_encode($response);

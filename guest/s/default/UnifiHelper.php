@@ -165,22 +165,24 @@ class UnifiHelper
 
     public function list_clients($mac = null)
     {
-        $this->login();
-        if ($this->debug) {
-            echo '--- debug ---  UnifiHelper list_clients()<br />';
-            echo '--- debug ---  $this->unifi_connection->list_clients($mac = null);<br />';
-            echo "<pre>";
 
-            $result = $this->unifi_connection->list_clients($mac);
+          // login is needed
+          $this->login();
 
-            print_r($result);
-            echo "</pre>";
-            echo '<br /><br />';
-        } else {
-            // suppress warnings
-            $result = @$this->unifi_connection->list_clients($mac);
-            return $result;
-        }
+          // continue stack trace
+          $this->stacktrace('call', __FUNCTION__, array('$mac'=>$mac), null);
+
+          // call API and get response
+          $response = @$this->unifi_connection->list_clients($mac);
+
+          // make return variable consisting of current stack trace + response
+          $return =  $this->handle_response(__FUNCTION__, $response);
+
+          // continue stack trace (this is only necessary if we are calling this function from within another parent function)
+          $this->stacktrace('response', __FUNCTION__, array('$mac'=>$mac), $response);
+
+          // return variable consisting of current stack trace + response
+          return $return;
     }
     //
 
