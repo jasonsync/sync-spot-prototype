@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 require_once '../UnifiHelper.php';
 include '../config.php';
 
@@ -15,5 +16,4 @@ if (!isset($_GET['ap'])) {
 $SyncUnifiHelper = new SyncSpot\UnifiHelper($config);
 $response = $SyncUnifiHelper->authorize_device($mac, $ap);
 
-header('Content-Type: application/json');
 echo json_encode($response);

@@ -74,7 +74,7 @@ class UnifiHelper
     public function login()
     {
         $this->stacktrace('call', __FUNCTION__, null, null); // continue stack trace
-        $response = @$this->unifi_connection->login();  // call API and get response
+        $response = $this->unifi_connection->login();  // call API and get response
         $return =  $this->handle_response(__FUNCTION__, $response);  // make return variable consisting of current stack trace + response
         $this->stacktrace('response', __FUNCTION__, null, $response);  // continue stack trace (this is only necessary if we are calling this function from within another parent function)
         return $return;
@@ -91,7 +91,7 @@ class UnifiHelper
         $this->stacktrace('call', __FUNCTION__, array('$mac'=>$mac,'$ap'=>$ap), null);
 
         // call API and get response
-        $response = @$this->unifi_connection->authorize_guest($mac, $this->config_controller['duration'], $up = null, $down = null, $MBytes = null, $ap);
+        $response = $this->unifi_connection->authorize_guest($mac, $this->config_controller['duration'], $up = null, $down = null, $MBytes = null, $ap);
 
         // make return variable consisting of current stack trace + response
         $return =  $this->handle_response(__FUNCTION__, $response);
@@ -105,106 +105,112 @@ class UnifiHelper
 
     public function unauthorize_device($mac)
     {
+        // login is needed
         $this->login();
-        if ($this->debug) {
-            echo '--- debug ---  UnifiHelper unauthorize_device($mac="'.$mac.'")<br />';
-            echo '--- debug ---  $this->unifi_connection->unauthorize_guest($mac);<br />';
-            echo "<pre>";
 
-            $result = $this->unifi_connection->unauthorize_guest($mac);
+        // continue stack trace
+        $this->stacktrace('call', __FUNCTION__, array('$mac'=>$mac), null);
 
-            print_r($result);
-            echo "</pre>";
-            echo '<br /><br />';
-        } else {
-            // suppress warnings
-            $result = @$this->unifi_connection->unauthorize_guest($mac);
-            return $result;
-        }
+        // call API and get response
+        $response = $this->unifi_connection->unauthorize_guest($mac);
+
+        // make return variable consisting of current stack trace + response
+        $return =  $this->handle_response(__FUNCTION__, $response);
+
+        // continue stack trace (this is only necessary if we are calling this function from within another parent function)
+        $this->stacktrace('response', __FUNCTION__, array('$mac'=>$mac), $response);
+
+        // return variable consisting of current stack trace + response
+        return $return;
     }
 
     public function reconnect_device($mac)
     {
+        // login is needed
         $this->login();
-        if ($this->debug) {
-            echo '--- debug ---  UnifiHelper reconnect_device($mac="'.$mac.'")<br />';
-            echo '--- debug ---  $this->unifi_connection->reconnect_sta($mac);<br />';
-            echo "<pre>";
 
-            $result = $this->unifi_connection->reconnect_sta($mac);
+        // continue stack trace
+        $this->stacktrace('call', __FUNCTION__, array('$mac'=>$mac), null);
 
-            print_r($result);
-            echo "</pre>";
-            echo '<br /><br />';
-        } else {
-            // suppress warnings
-            $result = @$this->unifi_connection->reconnect_sta();
-            return $result;
-        }
+        // call API and get response
+        $response = $this->unifi_connection->reconnect_sta($mac);
+
+        // make return variable consisting of current stack trace + response
+        $return =  $this->handle_response(__FUNCTION__, $response);
+
+        // continue stack trace (this is only necessary if we are calling this function from within another parent function)
+        $this->stacktrace('response', __FUNCTION__, array('$mac'=>$mac), $response);
+
+        // return variable consisting of current stack trace + response
+        return $return;
     }
 
-    public function list_guests()
+    // lists sessions
+    public function list_guests($within)
     {
+        // login is needed
         $this->login();
-        if ($this->debug) {
-            echo '--- debug ---  UnifiHelper list_guests()<br />';
-            echo '--- debug ---  $this->unifi_connection->list_guests();<br />';
-            echo "<pre>";
 
-            $result = $this->unifi_connection->list_guests();
+        // continue stack trace
+        $this->stacktrace('call', __FUNCTION__, array('$within'=>$within), null);
 
-            print_r($result);
-            echo "</pre>";
-            echo '<br /><br />';
-        } else {
-            // suppress warnings
-            $result = @$this->unifi_connection->list_guests();
-            return $result;
-        }
+        // call API and get response
+        $response = $this->unifi_connection->list_guests($within);
+
+        // make return variable consisting of current stack trace + response
+        $return =  $this->handle_response(__FUNCTION__, $response);
+
+        // continue stack trace (this is only necessary if we are calling this function from within another parent function)
+        $this->stacktrace('response', __FUNCTION__, array('$within'=>$within), $response);
+
+        // return variable consisting of current stack trace + response
+        return $return;
     }
 
     public function list_clients($mac = null)
     {
 
-          // login is needed
-          $this->login();
-
-          // continue stack trace
-          $this->stacktrace('call', __FUNCTION__, array('$mac'=>$mac), null);
-
-          // call API and get response
-          $response = @$this->unifi_connection->list_clients($mac);
-
-          // make return variable consisting of current stack trace + response
-          $return =  $this->handle_response(__FUNCTION__, $response);
-
-          // continue stack trace (this is only necessary if we are calling this function from within another parent function)
-          $this->stacktrace('response', __FUNCTION__, array('$mac'=>$mac), $response);
-
-          // return variable consisting of current stack trace + response
-          return $return;
-    }
-    //
-
-    public function list_device_authorizations($start = null, $end = null)
-    {
+        // login is needed
         $this->login();
-        if ($this->debug) {
-            echo '--- debug ---  UnifiHelper stat_auths()<br />';
-            echo '--- debug ---  unifi_connection->stat_auths($start, $end);<br />';
-            echo "<pre>";
 
-            $result = $this->unifi_connection->stat_auths($start, $end);
+        // continue stack trace
+        $this->stacktrace('call', __FUNCTION__, array('$mac'=>$mac), null);
 
-            print_r($result);
-            echo "</pre>";
-            echo '<br /><br />';
-        } else {
-            // suppress warnings
-            $result = $this->unifi_connection->stat_auths($start, $end);
-            return $result;
-        }
+        // call API and get response
+        $response = $this->unifi_connection->list_clients($mac);
+
+        // make return variable consisting of current stack trace + response
+        $return =  $this->handle_response(__FUNCTION__, $response);
+
+        // continue stack trace (this is only necessary if we are calling this function from within another parent function)
+        $this->stacktrace('response', __FUNCTION__, array('$mac'=>$mac), $response);
+
+        // return variable consisting of current stack trace + response
+        return $return;
     }
+
+    public function list_users()
+    {
+        // login is needed
+        $this->login();
+
+        // continue stack trace
+        $this->stacktrace('call', __FUNCTION__, null, null);
+
+        // call API and get response
+        $response = $this->unifi_connection->list_users();
+
+        // make return variable consisting of current stack trace + response
+        $return =  $this->handle_response(__FUNCTION__, $response);
+
+        // continue stack trace (this is only necessary if we are calling this function from within another parent function)
+        $this->stacktrace('response', __FUNCTION__, null, $response);
+
+        // return variable consisting of current stack trace + response
+        return $return;
+    }
+
+
 }
 
 

@@ -43,12 +43,23 @@ h4 {
   margin: 10px;
 }
 
+.form-item.hidden {
+  display:none;
+}
+
 .form-item label {
   display: inline-block;
   width: 100px;
 }
 
-.form-item input {
+.form-item label.auto-width {
+  width: auto;
+}
+.form-item label.wide {
+  width: 140px;
+}
+
+.form-item input[type="text"] {
   width: 120px;
 }
 

@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 require_once '../UnifiHelper.php';
 include '../config.php';
 
@@ -10,5 +11,4 @@ if (isset($_GET['mac'])) {
 $SyncUnifiHelper = new SyncSpot\UnifiHelper($config);
 $response = $SyncUnifiHelper->list_clients($mac);
 
-header('Content-Type: application/json');
 echo json_encode($response);

@@ -1,7 +1,7 @@
 <?php
+header('Content-Type: application/json');
 require_once '../UnifiHelper.php';
 include '../config.php';
-header('Content-Type: application/json');
 
 if (!isset($_GET['mac'])) {
     die('"mac" get parameter not set');
@@ -10,4 +10,4 @@ if (!isset($_GET['mac'])) {
 $SyncUnifiHelper = new SyncSpot\UnifiHelper($config);
 $response = $SyncUnifiHelper->unauthorize_device($_GET['mac']);
 
-echo($response);
+echo json_encode($response);

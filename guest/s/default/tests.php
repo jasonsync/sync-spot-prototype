@@ -172,6 +172,12 @@ if (!isset($_SESSION["url"])) {
           Kills this browser's PHP session and reloads this web page
         </div>
       </div>
+      <div class="flex-item">
+        <button type="button" name="btnReload" onclick="reload();">♻ Refresh</button>
+        <div class="description">
+          Reloads this web page
+        </div>
+      </div>
     </div>
   </div>
 
@@ -185,73 +191,120 @@ if (!isset($_SESSION["url"])) {
     </div>
     <div class="flex-container" style="background-color:#4dcfb2;">
 
+<!-- AUTHORIZE DEVICE -->
       <div class="flex-item">
         <button type="button" name="button" onclick="authorize_device();">Authorize Device</button>
-        <button type="button" name="button" onclick="authorize_device_then_redirect();">... & Redirect</button>
-        <button type="button" name="button" onclick="authorize_device_then_success();">Success landing page</button>
-        <button type="button" name="button" onclick="authorize_device_then_success_then_redirect();">... & Redirect</button>
         <div class="description">
-          Grant internet access to a specific Wi-Fi connected device. You can also simulate a redirect on successful authorization.
+          Grant internet access to a specific Wi-Fi connected device.
+          <div class="description italic grey">
+            You can also simulate a redirect on successful authorization in THIS browser.
+          </div>
         </div>
         <div class="required"> = REQUIRED</div>
         <div class="form-item">
           <label for="authorize_device_mac">Device MAC<span class="required"></span></label> <input type="text" name="authorize_device_mac" id="authorize_device_mac" value="<?php echo $_SESSION['id']; ?>" placeholder="Required">
-          <button type="button" name="btnSESSION_authorize_device_mac" onclick="document.getElementById('authorize_device_mac').value='<?php echo $_SESSION['id']; ?>';">Session</button>
-          <button type="button" name="btnRND_authorize_device_mac" onclick="document.getElementById('authorize_device_mac').value=generate_random_mac();">Random</button>
+          <button type="button" name="btnSESSION_authorize_device_mac" onclick="document.getElementById('authorize_device_mac').value='<?php echo $_SESSION['id']; ?>';">⏱</button>
+          <button type="button" name="btnRND_authorize_device_mac" onclick="document.getElementById('authorize_device_mac').value=generate_random_mac();">🎲</button>
         </div>
         <div class="form-item">
           <label for="authorize_device_ap_mac">AP MAC</label> <input type="text" name="authorize_device_ap_mac" id="authorize_device_ap_mac" value="<?php echo $_SESSION['ap']; ?>">
-          <button type="button" name="btnSESSION_authorize_device_ap_mac" onclick="document.getElementById('authorize_device_ap_mac').value='<?php echo $_SESSION['ap']; ?>';">Session</button>
-          <button type="button" name="btnRND_authorize_device_ap_mac" onclick="document.getElementById('authorize_device_ap_mac').value=generate_random_mac();">Random</button>
+          <button type="button" name="btnSESSION_authorize_device_ap_mac" onclick="document.getElementById('authorize_device_ap_mac').value='<?php echo $_SESSION['ap']; ?>';">⏱</button>
+          <button type="button" name="btnRND_authorize_device_ap_mac" onclick="document.getElementById('authorize_device_ap_mac').value=generate_random_mac();">🎲</button>
         </div>
+        <hr>
         <div class="form-item">
+          <label for="cbx_success" class="wide">Enable Success Page</label><input type="checkbox" name="cbx_success" id="cbx_success" value="success" onchange="set_state_success()" autocomplete="off">
+        </div>
+        <div class="form-item hidden" id="div_form-item_success">
+          <div class="description">
+            Simulate a redirect to a success landing page on successful authorization in THIS browser.
+          </div>
+          <br />
           <label for="success_url">Success URL</label> <input type="text" name="success_url" id="success_url" value="success.php">
-          <button type="button" name="btnSESSION_success_url" onclick="document.getElementById('success_url').value='<?php echo $_SESSION['url']; ?>';">Session</button>
+          <button type="button" name="btnSESSION_success_url" onclick="document.getElementById('success_url').value='<?php echo $_SESSION['url']; ?>';">⏱</button>
           <button type="button" name="btnSYNCSPOT_success_url" onclick="document.getElementById('success_url').value='success.php'">SyncSpot</button>
           <button type="button" name="btnGOOGLE_success_url" onclick="document.getElementById('success_url').value='https://www.google.com/search?q=my+ip'">Google</button>
         </div>
+        <hr>
         <div class="form-item">
-          <label for="redirect_url">Redirect URL</label> <input type="text" name="redirect_url" id="redirect_url" value="<?php echo $_SESSION['url']; ?>">
-          <button type="button" name="btnSESSION_redirect_url" onclick="document.getElementById('redirect_url').value='<?php echo $_SESSION['url']; ?>';">Session</button>
+          <label for="cbx_redirect" class="wide">Enable Redirect</label><input type="checkbox" name="cbx_redirect" id="cbx_redirect" value="redirect" onchange="set_state_redirect()" autocomplete="off">
+        </div>
+        <div class="form-item hidden" id="div_form-item_redirect">
+          <div class="description">
+            Simulate a redirect on successful authorization in THIS browser.
+            <div class="description italic grey">
+              If both "success page" AND "redirect page" are enabled, then success page will be shown first with a timer, followed by the redirect
+            </div>
+          </div>
+          <br />
+          <label for="redirect_url">Redirect URL</label> <input type="text" name="redirect_url" id="redirect_url" value="https://www.google.com/search?q=my+ip">
+          <button type="button" name="btnSESSION_redirect_url" onclick="document.getElementById('redirect_url').value='<?php echo $_SESSION['url']; ?>';">⏱</button>
           <button type="button" name="btnGOOGLE_redirect_url" onclick="document.getElementById('redirect_url').value='https://www.google.com/search?q=my+ip'">Google</button>
         </div>
       </div>
+<!-- RECONNECT DEVICE -->
+      <div class="flex-item">
+        <button type="button" name="button" onclick="reconnect_device();">Reconnect Device</button>
+        <div class="description">
+          Make AP drop device connection.
+          <div class="description italic grey">
+            Note: some devices won't indicate they are disconnected immediately.
+          </div>
+        </div>
+        <div class="required"> = REQUIRED</div>
+        <div class="form-item">
+          <label for="reconnect_device_mac">Device MAC<span class="required"></span></label> <input type="text" name="reconnect_device_mac" id="reconnect_device_mac" value="<?php echo $_SESSION['id']; ?>" placeholder="Required">
+          <button type="button" name="btnSESSION_reconnect_device_mac" onclick="document.getElementById('reconnect_device_mac').value='<?php echo $_SESSION['id']; ?>';">⏱</button>
+          <button type="button" name="btnRND_reconnect_device_mac" onclick="document.getElementById('reconnect_device_mac').value=generate_random_mac();">🎲</button>
+        </div>
+      </div>
+<!-- REVOKE DEVICE ACCESS -->
       <div class="flex-item">
         <button type="button" name="button" onclick="unauthorize_device();">Revoke Device Access</button>
         <div class="description">
-          Make connected device lose internet authorization (after a few seconds)
+          Make connected device lose internet authorization
+          <div class="description italic grey">
+            Note: Sometimes only happens after several seconds
+          </div>
         </div>
         <div class="required"> = REQUIRED</div>
         <div class="form-item">
           <label for="unauthorize_device_mac">Device MAC<span class="required"></span></label> <input type="text" name="unauthorize_device_mac" id="unauthorize_device_mac" value="<?php echo $_SESSION['id']; ?>" placeholder="Required">
-          <button type="button" name="btnSESSION_unauthorize_device_mac" onclick="document.getElementById('unauthorize_device_mac').value='<?php echo $_SESSION['id']; ?>';">Session</button>
-          <button type="button" name="btnRND_unauthorize_device_mac" onclick="document.getElementById('unauthorize_device_mac').value=generate_random_mac();">Random</button>
+          <button type="button" name="btnSESSION_unauthorize_device_mac" onclick="document.getElementById('unauthorize_device_mac').value='<?php echo $_SESSION['id']; ?>';">⏱</button>
+          <button type="button" name="btnRND_unauthorize_device_mac" onclick="document.getElementById('unauthorize_device_mac').value=generate_random_mac();">🎲</button>
         </div>
       </div>
-
+<!-- LIST CLIENTS -->
       <div class="flex-item">
-        <button type="button" name="button" onclick="list_device_authorizations();">Fetch Authorizations</button>
+        <button type="button" name="button" onclick="list_clients();">List Connected Clients</button>
         <div class="description">
-          List all device authorizations records within a date/time range
-        </div>
-      </div>
-      <div class="flex-item">
-        <button type="button" name="button" onclick="list_clients();">List Clients</button>
-        <div class="description">
-          List all clients. Optionally for specific MAC
+          List all online clients. You can filter by MAC address.
         </div>
         <div class="form-item">
           <label for="list_clients_mac">Device MAC</label> <input type="text" name="list_clients_mac" id="list_clients_mac" value="" placeholder="Optional">
           <button type="button" name="btnALL_list_clients_mac" onclick="document.getElementById('list_clients_mac').value='';">All</button>
-          <button type="button" name="btnSESSION_list_clients_mac" onclick="document.getElementById('list_clients_mac').value='<?php echo $_SESSION['id']; ?>';">Session</button>
+          <button type="button" name="btnSESSION_list_clients_mac" onclick="document.getElementById('list_clients_mac').value='<?php echo $_SESSION['id']; ?>';">⏱</button>
+        </div>
+      </div>
+<!-- LIST GUESTS  -->
+      <div class="flex-item">
+        <button type="button" name="button" onclick="list_guests();">List Authentications</button>
+        <div class="description">
+          List all past & present client authentications within the last "x" hours.
+          <div class="grey italic">AKA "Guests" according to Unifi</div>
+        </div>
+        <div class="form-item">
+          <label for="list_guests_within">Within the last</label> <input type="text" name="list_guests_within" id="list_guests_within" value="" placeholder="defaults to a week"> Hours
+        </div>
+      </div>
+<!-- LIST USERS  -->
+      <div class="flex-item">
+        <button type="button" name="button" onclick="list_users();">List Known Clients</button>
+        <div class="description">
+          List all known client devices
         </div>
       </div>
 
-
-      <div class="flex-item">
-        <button type="button" name="button" onclick="reconnect_device();">Reconnect Device</button>
-        <div class="required"> = REQUIRED</div>
-      </div>
     </div>
   </div>
 
@@ -293,9 +346,14 @@ window.debug_console_log = false;
   window.debug_console_log = true;
   <?php } ?>
 
+    var sync = {
+      "redirect_enabled":false,
+      "success_enabled":false
+    }
+
     var controller_login = function() {
       fetch('tests/controller_login.php')
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => display_output(data))
     };
 
@@ -303,44 +361,64 @@ window.debug_console_log = false;
     var authorize_device = function() {
       var device_mac = document.getElementById("authorize_device_mac").value;
       var ap_mac = document.getElementById("authorize_device_ap_mac").value;
-      fetch('tests/authorize_device.php?mac=' + device_mac + "&ap=" + ap_mac)
-        .then(response => response.text())
-        .then(data => display_output(data))
+      process_call('tests/authorize_device.php?mac=' + device_mac + "&ap=" + ap_mac)
+        .then(()=>{ handle_success_and_redirect(); })
     };
-    var authorize_device_then_redirect = function() {
-      var device_mac = document.getElementById("authorize_device_mac").value;
-      var ap_mac = document.getElementById("authorize_device_ap_mac").value;
-      var url = document.getElementById("redirect_url").value;
-      fetch('tests/authorize_device.php?mac=' + device_mac + "&ap=" + ap_mac)
-        .then(response => response.json())
-        .then(data => display_output(data))
-        .then(()=>{window.location = url;})
-    };
-    var authorize_device_then_success = function() {
-      var device_mac = document.getElementById("authorize_device_mac").value;
-      var ap_mac = document.getElementById("authorize_device_ap_mac").value;
-      var success_url = document.getElementById("success_url").value;
-      fetch('tests/authorize_device.php?mac=' + device_mac + "&ap=" + ap_mac)
-        .then(response => response.json())
-        .then(data => display_output(data))
-        .then(()=>{window.location = success_url;})
-    };
-    var authorize_device_then_success_then_redirect = function() {
-      var device_mac = document.getElementById("authorize_device_mac").value;
-      var ap_mac = document.getElementById("authorize_device_ap_mac").value;
+
+    function handle_success_and_redirect(){
       var success_url = document.getElementById("success_url").value;
       var redirect_url = document.getElementById("redirect_url").value;
-      fetch('tests/authorize_device.php?mac=' + device_mac + "&ap=" + ap_mac)
-        .then(response => response.json())
-        .then(data => display_output(data))
-        .then(()=>{window.location = success_url+'?redirect='+redirect_url;})
-    };
+
+      if(sync.success_enabled && sync.redirect_enabled){
+        window.location = success_url+'?redirect='+redirect_url;
+        return;
+      }
+      if(sync.redirect_enabled){
+        window.location = redirect_url;
+        return;
+      }
+      if(sync.success_enabled){
+        window.location = success_url;
+        return;
+      }
+    }
+
+    // var authorize_device_then_redirect = function() {
+    //   var device_mac = document.getElementById("authorize_device_mac").value;
+    //   var ap_mac = document.getElementById("authorize_device_ap_mac").value;
+    //   var url = document.getElementById("redirect_url").value;
+    //   fetch('tests/authorize_device.php?mac=' + device_mac + "&ap=" + ap_mac)
+    //     .then(response => response.text())
+    //     .then(data => display_output(data))
+    //     .then(()=>{window.location = url;})
+    // };
+    // var authorize_device_then_success = function() {
+    //   var device_mac = document.getElementById("authorize_device_mac").value;
+    //   var ap_mac = document.getElementById("authorize_device_ap_mac").value;
+    //   var success_url = document.getElementById("success_url").value;
+    //   fetch('tests/authorize_device.php?mac=' + device_mac + "&ap=" + ap_mac)
+    //     .then(response => response.text())
+    //     .then(data => display_output(data))
+    //     .then(()=>{window.location = success_url;})
+    // };
+    // var authorize_device_then_success_then_redirect = function() {
+    //   var device_mac = document.getElementById("authorize_device_mac").value;
+    //   var ap_mac = document.getElementById("authorize_device_ap_mac").value;
+    //   var success_url = document.getElementById("success_url").value;
+    //   var redirect_url = document.getElementById("redirect_url").value;
+    //   process_call('tests/authorize_device.php?mac=' + device_mac + "&ap=" + ap_mac)
+    //     .then(()=>{window.location = success_url+'?redirect='+redirect_url;})
+    // };
     var unauthorize_device = function() {
       var device_mac = document.getElementById("unauthorize_device_mac").value;
-      fetch('tests/unauthorize_device.php?mac=' + device_mac)
-        .then(response => response.json())
-        .then(data => display_output(data))
+      process_call('tests/unauthorize_device.php?mac=' + device_mac);
     };
+    var reconnect_device = function() {
+      var device_mac = document.getElementById("reconnect_device_mac").value;
+      process_call('tests/reconnect_device.php?mac=' + device_mac);
+    };
+
+
 
     /* LISTS */
     var list_device_authorizations = function() {
@@ -348,23 +426,52 @@ window.debug_console_log = false;
       var unix_start = Date.now() - 604800000;
       var unix_end = Date.now();
 
-      fetch('tests/list_device_authorizations.php?start=' + unix_start + '&end=' + unix_end)
-        .then(response => response.json())
-        .then(data => display_output(data))
+      process_call('tests/list_device_authorizations.php?start=' + unix_start + '&end=' + unix_end);
     };
 
     var list_clients = function(){
       var device_mac = document.getElementById("list_clients_mac").value;
-      fetch('tests/list_clients.php?mac=' + device_mac)
-        .then(response => response.json())
-        .then(data => display_output(data))
+      process_call('tests/list_clients.php?mac=' + device_mac);
     }
 
     var list_guests = function() {
-      fetch('tests/list_guests.php')
-        .then(response => response.json())
-        .then(data => display_output(data))
+      var list_guests_within = document.getElementById("list_guests_within").value;
+      process_call('tests/list_guests.php?within=' + list_guests_within);
     };
+
+    var list_users = function() {
+      process_call('tests/list_users.php');
+    };
+
+    function process_call(url){
+      return fetch(url)
+        .then(response => response.text())
+        .then(data => display_output(data))
+    }
+
+    function set_state_redirect(){
+      var el = document.getElementById("div_form-item_redirect");
+      var checkbox = document.getElementById("cbx_redirect");
+      if(checkbox.checked){
+        sync.redirect_enabled = true;
+        el.classList.remove("hidden");
+      } else {
+        sync.redirect_enabled = false;
+        el.classList.add("hidden");
+      }
+    }
+
+    function set_state_success(){
+      var el = document.getElementById("div_form-item_success");
+      var checkbox = document.getElementById("cbx_success");
+      if(checkbox.checked){
+        sync.success_enabled = true;
+        el.classList.remove("hidden");
+      } else {
+        sync.success_enabled = false;
+        el.classList.add("hidden");
+      }
+    }
 
     function show_section(elementId){
       document.getElementById(elementId).classList.remove("hide-contents");
@@ -374,6 +481,12 @@ window.debug_console_log = false;
     }
 
     function display_output(output) {
+      try {
+        output = JSON.parse(output);
+      } catch (e) {
+
+      }
+
       if(window.debug_console_log){
         console.log(output);
       }
@@ -397,12 +510,17 @@ window.debug_console_log = false;
       return "XX:XX:XX:XX:XX:XX".replace(/X/g, function() {
         return "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16))
       });
-    }
+    };
 
     var kill_session_and_reload = function(){
       fetch('kill_session.php')
         .then(setTimeout(function(){ window.location.reload(); }, 1000))
-    }
+    };
+
+    var reload = function (){
+      window.location.reload();
+    };
+
   </script>
 </body>
 
