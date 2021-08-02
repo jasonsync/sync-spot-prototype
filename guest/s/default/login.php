@@ -26,19 +26,7 @@ $auth_result = $unifi_connection->authorize_guest($mac, $controller['duration'],
 echo('$auth_result: ');
 echo('<br />');
 print_r($auth_result);
-// User will be authorized at this point; their name and email address can be saved to some database now
-
-$url = "http://api.macvendors.com/" . urlencode($mac);
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$response = curl_exec($ch);
-if ($response) {
-    echo "Vendor: $response";
-} else {
-    echo "Not Found";
-}
-
+//User will be authorized at this point; their name and email address can be saved to some database now
 ?>
 
 <!doctype html>

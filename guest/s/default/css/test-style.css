@@ -1,0 +1,158 @@
+body {
+  background-color: #f7f7f7;
+  margin: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-family: arial, sans-serif;
+  font-size: 10pt;
+  color: #333;
+  user-select: none;
+}
+
+h4 {
+  font-style: italic;
+  color: #a0a0a0;
+  padding: 20px;
+}
+
+.tiny-text {
+  font-size: 4pt;
+}
+
+.grey {
+  color: #a0a0a0;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.larger {
+  font-size: 12pt;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.form {
+  padding: 10px;
+}
+
+.form-item {
+  margin: 10px;
+}
+
+.form-item.hidden {
+  display:none;
+}
+
+.form-item label {
+  display: inline-block;
+  width: 100px;
+}
+
+.form-item label.auto-width {
+  width: auto;
+}
+.form-item label.wide {
+  width: 140px;
+}
+
+.form-item input[type="text"] {
+  width: 120px;
+}
+
+.flex-container {
+  display: inline-flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-content: space-around;
+}
+
+.flex-container {
+  width: 100%;
+  /* so that the flex-heading-container layout fits nicely */
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.flex-heading-item {
+  display: inline-flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-content: space-around;
+  align-items: center;
+  padding: 5px 25px 0 25px;
+  margin: 0px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  color: #f3f3f3;
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+.flex-item {
+  border: 1px solid black;
+  padding: 5px;
+  margin: 7px;
+  border-radius: 7px;
+  background-color: #f3f3f3;
+}
+
+.description {
+  font-size: 8pt;
+  padding: 5px;
+  /* color: #00c000; */
+}
+
+.required {
+  /* font-size: 10pt; */
+  padding: 5px;
+  color: #d80000;
+  font-weight: bold;
+}
+
+.required::before {
+  content: "ℹ";
+}
+
+/* HIDING */
+.btn-show, .btn-hide {
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 25%);
+  cursor: pointer;
+  padding: 3px 10px;
+  margin-left: 10px;
+  user-select: none;
+}
+
+.btn-show:hover, .btn-hide:hover {
+  filter: brightness(1.3);
+}
+
+.hide-contents .flex-heading-item {
+  border-radius: 20px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+}
+
+.flex-section.hide-contents .flex-container, .flex-section.hide-contents .btn-hide {
+  display: none;
+}
+
+.flex-section:not(.hide-contents) .btn-show {
+  display: none;
+}
+
+.output {
+  border: 1px solid black;
+  padding: 5px;
+  margin: 7px;
+  border-radius: 7px;
+  background-color: #f3f3f3;
+  user-select: text;
+  word-break: break-all;
+}

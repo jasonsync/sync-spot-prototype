@@ -1,24 +1,28 @@
 <?php
+include 'config.php';
+
+if ($config['debug_test_screen']) {
+    require __DIR__ . '\tests.php';
+    exit;
+}
 
 session_start();
-
 //Get the MAC addresses of AP and user
 if (isset($_GET["id"])) {
     $_SESSION["id"] = $_GET["id"];
-    echo '$_SESSION["id"]:';
-    echo '<br />';
-    echo $_SESSION["id"];
-    echo '<br />';
-    echo '<br />';
 }
 
 if (isset($_GET["ap"])) {
     $_SESSION["ap"] = $_GET["ap"];
-    echo '$_SESSION["ap"]:';
-    echo '<br />';
-    echo $_SESSION["ap"];
-    echo '<br />';
-    echo '<br />';
+}
+
+if ($config['sync']['unifi-helper']['debug']) {
+    echo 'PHP $_GET:<br />';
+    print_r($_GET);
+    echo '<br /><br />';
+    echo 'PHP $_Session:<br />';
+    print_r($_SESSION);
+    echo '<br /><br />';
 }
 
 ?>
