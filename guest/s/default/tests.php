@@ -1,6 +1,10 @@
 <?php
 include 'config.php';
-session_start();
+include("db.php");
+
+if (!isset($_SESSION)) {
+    session_start();
+}
 //Get the MAC addresses of AP and user
 if (isset($_GET["id"])) {
     $_SESSION["id"] = $_GET["id"];

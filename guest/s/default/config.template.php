@@ -1,6 +1,12 @@
 <?php
 
 $config = [
+  'mysql'=>[
+    'server'=>'localhost',
+    'username'=>'captiveportal',
+    'password'=>'',
+    'database'=>'syncspot'
+  ],
   'unifi-api'=> [
     'controller' => [
       'username'=>'{user}', //the user name for access to the UniFi Controller
@@ -16,4 +22,5 @@ $config = [
   'debug_display_php_vars'=>true, //On test page it prints PHP session / GET parameters
   'debug_console_log'=>true, // if false, then all debugging is suppressed
   'stacktrace_enabled'=>true, // includes stack trace in response.
+  'debug_mysqli'=>false // debug mysqli
 ];
